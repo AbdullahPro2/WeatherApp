@@ -4,11 +4,13 @@ import cloud from "../imgs/cloud_sun.png";
 import rain from "../imgs/rain.png";
 import blueCloud from "../imgs/blue-cloud-icon-png.webp";
 
-function CurrentWeather({ data }) {
+function CurrentWeather({ data, changeDegree, setChangeDegree }) {
   const [converter, setconverter] = useState(true);
-
+  const { temp, feels_like, temp_max, temp_min, humidity, pressure } =
+    data.list[0].main;
   function handleConverter() {
     setconverter((prev) => !prev);
+    setChangeDegree((prev) => !prev);
   }
   return (
     <div className="Current-Weather-Container">
@@ -42,8 +44,8 @@ function CurrentWeather({ data }) {
             <img src={sun} alt="cloud and sun" className="weather-image" />
           )}
           <p>
-            {Math.round(data !== null ? data.list[0].main.temp - 273.15 : "23")}
-            °
+            {changeDegree && Math.round(((temp - 273.15) * 9) / 5 + 32)}
+            {!changeDegree && Math.round(temp - 273.15)}°
           </p>
         </div>
         <p className="weather-status">
@@ -51,30 +53,20 @@ function CurrentWeather({ data }) {
         </p>
       </div>
       <div className="box-3 box">
-        <p>
-          Feels Like{" "}
-          {data !== null
-            ? Math.round(data.list[0].main.feels_like - 273.15)
-            : "23"}
-          °
-        </p>
+        <p>Feels Like {Math.round((feels_like - 273.15) / 5)}°</p>
         <div className="arrows-dev">
           <p className="p-devs">
             <span className="icons-current-weather">&#x2193;</span>
             <span className="arrow">
-              {data !== null
-                ? Math.round(data.list[0].main.temp_max - 273.15 - 3)
-                : "23"}
-              °
+              {changeDegree && (Math.round(temp_max - 273.15 - 3) * 9) / 5 + 32}
+              {!changeDegree && Math.round(temp_max - 273.15 - 3)}°
             </span>
           </p>
           <p className="p-devs">
             <span className="icons-current-weather">&#x2191;</span>
             <span className="arrow">
-              {data !== null
-                ? Math.round(data.list[0].main.temp_min - 273.15)
-                : "23"}
-              °
+              {changeDegree && (Math.round(temp_min - 273.15) * 9) / 5 + 32}
+              {!changeDegree && Math.round(temp_min - 273.15)}°
             </span>
           </p>
         </div>
@@ -89,17 +81,12 @@ function CurrentWeather({ data }) {
         <p className="p-devs">
           <span className="icons-current-weather">&#x1F4A7;</span>
           <span className="p-devs-text">Humadity </span>
-          <span className="p-devs-number">
-            {data !== null ? Math.round(data.list[0].main.humidity) : "23"} %
-          </span>
+          <span className="p-devs-number">{Math.round(humidity)} %</span>
         </p>
         <p className="p-devs">
           <span className="icons-current-weather">&#x1F4A8;</span>
           <span className="p-devs-text">Pressure</span>
-          <span className="p-devs-number">
-            {" "}
-            {data !== null ? Math.round(data.list[0].main.pressure) : "23"} hPa
-          </span>
+          <span className="p-devs-number"> {Math.round(pressure)} hPa</span>
         </p>
       </div>
     </div>

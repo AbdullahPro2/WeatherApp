@@ -8,7 +8,7 @@ import Loader from "./components/Loader";
 function App() {
   const KEY = "53f1ef0e2a3e14fd203c25c527e770aa";
   document.title = "Weather App";
-
+  const [changeDegree, setChangeDegree] = useState(false);
   const [inputValue, setInputValue] = useState("Mulhouse");
   const [weatherData, setWeatherData] = useState(null);
   const [loader, setLoader] = useState(false);
@@ -38,6 +38,7 @@ function App() {
               throw new Error("Failed to fetch weather data");
             }
             const data = await res.json();
+            console.log(data);
             setLoader(false);
             setWeatherData(data);
           } catch (err) {
@@ -52,19 +53,22 @@ function App() {
 
   if (loader) return <Loader />;
 
-  if (loader === false)
+  if (weatherData)
     return (
       <div className="app">
         <h1 className="heading">ReactWeather</h1>
-
         <SearchBar
           value={inputValue}
           onSetValue={setInputValue}
           size={"90%"}
           className={"inputBar"}
         />
-        <CurrentWeather data={weatherData} />
-        <NextDaysWeather data={weatherData} />
+        <CurrentWeather
+          data={weatherData}
+          setChangeDegree={setChangeDegree}
+          changeDegree={changeDegree}
+        />
+        <NextDaysWeather data={weatherData} changeDegree={changeDegree} />
       </div>
     );
 }
